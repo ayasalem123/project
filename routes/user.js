@@ -1,4 +1,7 @@
 const express = require('express');
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 const { DataValidation } = require('../middlewares/DataValidation');
 const { AuthMiddleware } = require('../middlewares/Authmiddlwear');
 const {
@@ -11,23 +14,36 @@ const {
   addappoitment,
 } = require('../controllers/UserController');
 const {
+  delettreatment,
+  changetreatment,
   unblockuser,
   blockuser,
   getAllusers,
   getdates,
   doneappoitment,
   deleteappoitment,
+  addimage,
+  getimage,
+  addtreatment,
+  notdoneappoitment,
 } = require('../controllers/AdminController');
 const router = express.Router();
 router.get('/carousel', getCarousel);
 router.get('/treatment', gettreatment);
+
 router.get('/book', getdates);
 router.get('/allusers', getAllusers);
 router.post('/book', addappoitment);
+router.post('/addtreatment', upload.single('image'), addtreatment);
+router.put('/changetreatment/:id', upload.single('image'), changetreatment);
+router.get('/image/:id', getimage);
+router.post('/image', upload.single('image'), addimage);
 router.put('/done/:id', doneappoitment);
+router.put('/notdone/:id', notdoneappoitment);
 router.put('/block/:id', blockuser);
 router.put('/unblock/:id', unblockuser);
 router.delete('/delete/:id', deleteappoitment);
+router.delete('/deletetreatment/:id', delettreatment);
 router.get('/appointments', AuthMiddleware, getappoitments);
 router.post('/register', DataValidation, register);
 router.post('/signin', DataValidation, signin);

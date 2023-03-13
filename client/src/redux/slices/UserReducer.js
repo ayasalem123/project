@@ -25,6 +25,7 @@ export const signin = createAsyncThunk(
       localStorage.setItem('userInfos', JSON.stringify(data));
       toast.success('signed in Successfully');
       navigate('/');
+      window.location.reload();
       return data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -37,6 +38,7 @@ export const logout = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       await localStorage.removeItem('userInfos');
+      window.location.reload();
     } catch (error) {
       return rejectWithValue(error?.response?.data);
     }

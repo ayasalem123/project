@@ -40,6 +40,8 @@ dotenv.config();
 // let newappoitnment = appointment.create({
 //   date: new Date(2023, 2, 4, 10, 0, 0),
 // });
+// Configure multer storage
+
 const userroutes = require('./routes/user');
 const app = express();
 app.use(cors());

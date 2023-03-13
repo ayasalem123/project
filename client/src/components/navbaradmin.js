@@ -188,7 +188,7 @@ export default function Navbaradmin() {
                   return (
                   <Button
                     key={page}
-                    onClick={() => navigate('/book')}
+                    onClick={() => navigate('/treatments')}
                     sx={{ my: 2, color: 'white', display: 'block' }}
                   >
                     {page}

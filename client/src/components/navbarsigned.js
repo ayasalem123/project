@@ -63,12 +63,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function Navbarsigned() {
   const navigate = useNavigate();
-  const { loggeduser } = useSelector(state => state.userAuth);
+  const { loggeduser } = useSelector((state) => state.userAuth);
   const dispatch = useDispatch();
-  const handlelogout=(event)=>{
+  const handlelogout = (event) => {
     event.preventDefault();
-    dispatch(logout())
-  }
+    dispatch(logout());
+    window.location.reload();
+  };
   return (
     <AppBar position="sticky">
       <Container maxWidth="xl">
@@ -98,14 +99,10 @@ export default function Navbarsigned() {
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-             
               color="inherit"
-            >
-            
-            </IconButton>
+            ></IconButton>
             <Menu
               id="menu-appbar"
-           
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'left',
@@ -115,13 +112,12 @@ export default function Navbarsigned() {
                 vertical: 'top',
                 horizontal: 'left',
               }}
-              
               sx={{
                 display: { xs: 'block', md: 'none' },
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} >
+                <MenuItem key={page}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -148,37 +144,39 @@ export default function Navbarsigned() {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => {
-              if(page=="log out")
-              {
-                return ( <Button
-                  key={page}
-                  onClick={handlelogout}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page}
-                </Button>)
+              if (page == 'log out') {
+                return (
+                  <Button
+                    key={page}
+                    onClick={handlelogout}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                  >
+                    {page}
+                  </Button>
+                );
+              } else {
+                if (page == 'treatments') {
+                  return (
+                    <Button
+                      key={page}
+                      sx={{ my: 2, color: 'white', display: 'block' }}
+                      onClick={() => navigate('/treatments')}
+                    >
+                      {page}
+                    </Button>
+                  );
+                }
+                return (
+                  <Button
+                    key={page}
+                    onClick={() => navigate('/book')}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                  >
+                    {page}
+                  </Button>
+                );
               }
-              else
-             { if(page=="treatments")
-             {return(
-              <Button
-                key={page}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-                onClick={()=>navigate("/treatments")}
-              >
-                {page}
-              </Button>
-            )}
-              return(
-              <Button
-                key={page}
-                onClick={()=>navigate("/book")}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            )}})}
-            
+            })}
           </Box>
           <Search>
             <SearchIconWrapper>
@@ -190,7 +188,6 @@ export default function Navbarsigned() {
             />
           </Search>
           <Box sx={{ flexGrow: 0 }}>
-            
             <Tooltip title="your account">
               <IconButton sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -209,14 +206,12 @@ export default function Navbarsigned() {
                 vertical: 'top',
                 horizontal: 'right',
               }}
-             /* open={Boolean(anchorElUser)}
+              /* open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}*/
-            >
-            </Menu>
+            ></Menu>
           </Box>
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
-

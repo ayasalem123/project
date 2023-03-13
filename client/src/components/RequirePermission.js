@@ -3,7 +3,7 @@ import { useLocation, Navigate, Outlet } from 'react-router-dom';
 export default function RequirPermission() {
   const { loggeduser } = useSelector((state) => state.userAuth);
   const location = useLocation();
-  return loggeduser?.signeduser?.blocked == false ? (
+  return loggeduser?.signeduser?.blocked == false || !loggeduser?.signeduser ? (
     <Outlet />
   ) : loggeduser?.signeduser ? (
     <Navigate to="/blocked" state={{ from: location }} replace />

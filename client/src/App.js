@@ -1,6 +1,6 @@
 import './App.css';
 import Home from './pages/home';
-import RequirePermission from '../src/components/RequirePermission'
+import RequirePermission from '../src/components/RequirePermission';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -9,10 +9,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import RequireAuth from './components/RequireAuth';
 import Register from './pages/register';
 import Login from './pages/login';
+import Listappointments from './components/Listappointment';
 import Treatment from './pages/treatments';
 import Calender from './components/calender';
 import List from './components/List';
-import Blocked from './pages/blocked'
+import Blocked from './pages/blocked';
 function App() {
   const [treatmentelement, setTreatmentelement] = useState([]);
   let gettreatment = async () => {
@@ -27,8 +28,8 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-        <Route path="/blocked" element={<Blocked />} />
-          <Route element={<RequirePermission  />}>
+          <Route path="/blocked" element={<Blocked />} />
+          <Route element={<RequirePermission />}>
             <Route
               path="/"
               element={<Home treatmentelement={treatmentelement} />}
@@ -44,7 +45,7 @@ function App() {
           </Route>
 
           <Route element={<RequireAuth allowedRole={'admin'} />}>
-            <Route path="/all" element={<List />} />
+            <Route path="/all" element={<Listappointments />} />
             <Route path="/allusers" element={<Users />} />
           </Route>
         </Routes>

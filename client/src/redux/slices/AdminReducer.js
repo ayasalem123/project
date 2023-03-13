@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
+import { Buffer } from 'buffer';
 export const getAllAppointments = createAsyncThunk(
   'user/getAllAppointments',
   async (payload, { rejectWithValue, getState, dispatch }) => {
@@ -39,6 +39,7 @@ export const DoneAppointment = createAsyncThunk(
   'user/DoneAppointment',
   async ({ id }, { rejectWithValue, getState, dispatch }) => {
     try {
+      console.log(id);
       const { data } = await axios.put(`http://localhost:5000/done/${id}`);
       return data;
     } catch (error) {
@@ -46,11 +47,90 @@ export const DoneAppointment = createAsyncThunk(
     }
   }
 );
-export const blockuser = createAsyncThunk(
-  'user/blockuser',
+export const NotDoneAppointment = createAsyncThunk(
+  'user/NotDoneAppointment',
   async ({ id }, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await axios.put(`http://localhost:5000/block/${id}`);
+      console.log(id);
+      const { data } = await axios.put(`http://localhost:5000/notdone/${id}`);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.message);
+    }
+  }
+);
+
+const userStored = localStorage.getItem('userInfos')
+  ? JSON.parse(localStorage.getItem('userInfos'))
+  : null;
+export const changetreatment = createAsyncThunk(
+  'user/changetreatment',
+  async (formData, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const id = userStored?.signeduser?._id;
+      const { data } = await axios.put(
+        `http://localhost:5000/changetreatment/${id}`,
+        formData
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.message);
+    }
+  }
+);
+export const addtreatment = createAsyncThunk(
+  'user/addtreatment',
+  async (formData, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const { data } = await axios.post(
+        `http://localhost:5000/addtreatment`,
+        formData
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.message);
+    }
+  }
+);
+
+export const deletetreatment = createAsyncThunk(
+  'user/deletetreatment',
+  async ({ id }, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const { data } = await axios.delete(
+        `http://localhost:5000/deletetreatment/${id}`
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.message);
+    }
+  }
+);
+export const getimage = createAsyncThunk(
+  'user/getimage',
+  async ({ id }, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const { data } = await axios.get(`http://localhost:5000/image/${id}`, {
+        responseType: 'arraybuffer',
+      });
+      console.log(data);
+      const imageBase64 = Buffer.from(data, 'binary').toString('base64');
+      const imageSrc = `data:image/jpeg;base64,${imageBase64}`;
+      console.log(imageSrc);
+      return imageSrc;
+    } catch (error) {
+      return rejectWithValue(error?.response?.message);
+    }
+  }
+);
+export const blockuser = createAsyncThunk(
+  'user/blockuser',
+  async ({ id, val }, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const { data } = await axios.put(
+        `http://localhost:5000/block/${id}`,
+        val
+      );
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.message);
@@ -59,8 +139,9 @@ export const blockuser = createAsyncThunk(
 );
 export const unblockuser = createAsyncThunk(
   'user/unblockuser',
-  async ({ id }, { rejectWithValue, getState, dispatch }) => {
+  async (id, { rejectWithValue, getState, dispatch }) => {
     try {
+      console.log(id);
       const { data } = await axios.put(`http://localhost:5000/unblock/${id}`);
       return data;
     } catch (error) {
@@ -152,7 +233,6 @@ export const userSlice = createSlice({
       state.appErr = action?.payload?.message;
       state.serverErr = action?.error?.message;
     },
-    
   },
 });
 export default userSlice.reducer;
