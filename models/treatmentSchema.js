@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const treatmentSchema = mongoose.Schema({
   title: {
     type: String,
+    trim: true,
     required: true,
     unique: true,
   },

@@ -32,6 +32,17 @@ export const signin = createAsyncThunk(
     }
   }
 );
+export const gettreatment = createAsyncThunk(
+  '/user/ gettreatment',
+  async (payload, { rejectWithValue, getState }) => {
+    try {
+      const { data } = await axios.get('http://localhost:5000/treatment');
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 export const logout = createAsyncThunk(
   'user/logout',
@@ -39,6 +50,21 @@ export const logout = createAsyncThunk(
     try {
       await localStorage.removeItem('userInfos');
       window.location.reload();
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
+export const getUser = createAsyncThunk(
+  'user/getUser',
+  async ({id}, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const { data } = await axios.post(
+        'http://localhost:5000/user',
+        {id}
+      );
+      return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data);
     }
@@ -65,7 +91,39 @@ export const getAppointments = createAsyncThunk(
     }
   }
 );
-
+export const createReview = createAsyncThunk(
+  'user/createReview',
+  async ({ formValue }, { rejectWithValue, getState }) => {
+    try {
+      const userAuth = getState()?.userAuth;
+      const { loggeduser } = userAuth;
+      const config = {
+        headers: { Authorization: `Bearer ${loggeduser?.token}` },
+      };
+      const { data } = await axios.post(
+        'http://localhost:5000/reviews',
+        formValue,
+        config
+      );
+      console.log(data);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+export const getReviews = createAsyncThunk(
+  'user/getReviews',
+  async (payload, { rejectWithValue, getState }) => {
+    try {
+      const { data } = await axios.get('http://localhost:5000/reviews');
+      console.log(data);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
 const userStored = localStorage.getItem('userInfos')
   ? JSON.parse(localStorage.getItem('userInfos'))
   : null;
@@ -117,6 +175,21 @@ export const userSlice = createSlice({
       state.appErr = action?.payload?.message;
       state.serverErr = action?.error?.message;
     },
+    [gettreatment.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [gettreatment.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.treatments = action.payload;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    },
+    [gettreatment.rejected]: (state, action) => {
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    },
+
     [getAppointments.pending]: (state, action) => {
       state.loading = true;
     },
@@ -131,6 +204,38 @@ export const userSlice = createSlice({
       state.appErr = action?.payload?.message;
       state.serverErr = action?.error?.message;
     },
+    [createReview.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [createReview.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.loggeduser.signeduser.reviews = [
+        ...state.loggeduser.signeduser.reviews,
+        action.payload,
+      ];
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    },
+    [createReview.rejected]: (state, action) => {
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    },
+    [ getReviews.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [ getReviews.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.reviews = action.payload;
+      state.appErr = undefined;
+      state.serverErr = undefined;
+    },
+    [ getReviews.rejected]: (state, action) => {
+      state.loading = false;
+      state.appErr = action?.payload?.message;
+      state.serverErr = action?.error?.message;
+    },
+   
   },
 });
 export default userSlice.reducer;

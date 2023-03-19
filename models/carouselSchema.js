@@ -4,6 +4,7 @@ const carouselSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    trim: true,
   },
   body: String,
   img: String,

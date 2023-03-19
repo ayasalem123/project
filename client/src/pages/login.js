@@ -29,7 +29,7 @@ export default function Login(props) {
       email: data.get('email'),
       password: data.get('password'),
     };
-    dispatch(signin({ user, toast , navigate}));
+    dispatch(signin({ user, toast, navigate }));
   };
   return (
     <div>
@@ -90,7 +90,7 @@ export default function Login(props) {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link to="/user/register" variant="body2">
+                  <Link to="/register" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>

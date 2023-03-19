@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import Menu from '@mui/material/Menu';
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 //import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
@@ -19,6 +20,20 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { logout } from '../redux/slices/UserReducer';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import CssBaseline from '@mui/material/CssBaseline';
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+const brightTheme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+});
 const pages = ['treatments', 'appointment', 'log out'];
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -34,7 +49,6 @@ const Search = styled('div')(({ theme }) => ({
     width: 'auto',
   },
 }));
-
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: '100%',
@@ -62,6 +76,28 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbarsigned() {
+  const [chosentheme, setChosentheme] = useState(brightTheme);
+  const [chosennumber, setChosennumber] = useState();
+  useEffect(() => {
+    const userTheme = localStorage.getItem('theme')
+      ? localStorage.getItem('theme')
+      : null;
+    if (userTheme && userTheme == 'darkTheme') {
+      setChosentheme(darkTheme);
+    } else {
+      setChosennumber(0);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (chosennumber == 0) {
+      localStorage.setItem('theme', 'brightTheme');
+      setChosentheme(brightTheme);
+    } else {
+      localStorage.setItem('theme', 'darkTheme');
+      setChosentheme(darkTheme);
+    }
+  }, [chosennumber]);
   const navigate = useNavigate();
   const { loggeduser } = useSelector((state) => state.userAuth);
   const dispatch = useDispatch();
@@ -177,6 +213,36 @@ export default function Navbarsigned() {
                 );
               }
             })}
+              <Box
+              sx={{
+                display: 'flex',
+                width: '5%',
+                justifyContent: 'center',
+                bgcolor: '#1976d2',
+                color: 'text.primary',
+                borderRadius: 1,
+                p: 1,
+              }}
+            >
+              <IconButton
+                sx={{ ml: 1 }}
+                onClick={() => {
+                  chosentheme === darkTheme
+                    ? setChosennumber(0)
+                    : setChosennumber(1);
+                }}
+                color="inherit"
+              >
+                {chosentheme === darkTheme ? (
+                  <Brightness7Icon />
+                ) : (
+                  <Brightness4Icon />
+                )}
+              </IconButton>
+            </Box>
+            <ThemeProvider theme={chosentheme}>
+              <CssBaseline />
+            </ThemeProvider>
           </Box>
           <Search>
             <SearchIconWrapper>
@@ -190,7 +256,7 @@ export default function Navbarsigned() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="your account">
               <IconButton sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" src={loggeduser?.signeduser?.profile} />
               </IconButton>
             </Tooltip>
             <Menu

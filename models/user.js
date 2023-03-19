@@ -7,6 +7,10 @@ const UserSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
   password: {
     type: String,
     required: true,
@@ -21,6 +25,23 @@ const UserSchema = mongoose.Schema({
     dr: ['user', 'admin'],
     default: 'user',
   },
+  profile:{
+    type: String,
+    
+  }
+  
+},
+{
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+  timestamps: true,
 });
+UserSchema.virtual("reviews", {
+  ref: "review",
+  foreignField: "user",
+  localField: "_id",
+});
+
+
 
 module.exports = mongoose.model('AuthUser', UserSchema);

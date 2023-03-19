@@ -29,7 +29,7 @@ function Carouselcomponent({ carouselelement }) {
 
         <Carousel.Caption>
           <h3 style={{ color: 'black' }}> {carouselelement[0].title}</h3>
-          <p style={{ color: 'black' }}>{carouselelement[0].body}</p>
+          <Link to={'/reviews'}>{carouselelement[0].body}</Link>
         </Carousel.Caption>
       </Carousel.Item>
     </Carousel>

@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import { useNavigate } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
-import {Link} from 'react'
+import { Link } from 'react';
 //import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
@@ -76,9 +76,35 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Navbarvisitor() {
+export default function Navbarvisitor({ setval }) {
   const navigate = useNavigate();
   const [chosentheme, setChosentheme] = useState(brightTheme);
+  const [chosennumber, setChosennumber] = useState();
+  useEffect(() => {
+    const userTheme = localStorage.getItem('theme')
+      ? localStorage.getItem('theme')
+      : null;
+    if (userTheme && userTheme == 'darkTheme') {
+      setChosentheme(darkTheme);
+    } else {
+      setChosennumber(0);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (chosennumber == 0) {
+      localStorage.setItem('theme', 'brightTheme');
+      setChosentheme(brightTheme);
+    } else {
+      localStorage.setItem('theme', 'darkTheme');
+      setChosentheme(darkTheme);
+    }
+  }, [chosennumber]);
+  const handlechange = (event) => {
+    console.log(event.target.value);
+    setval(event.target.value);
+  };
+
   return (
     <AppBar position="sticky">
       <Container maxWidth="xl">
@@ -131,7 +157,6 @@ export default function Navbarvisitor() {
                 </MenuItem>
               ))}
             </Menu>
-            
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
@@ -153,28 +178,28 @@ export default function Navbarvisitor() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) =>{
-              if(page=="log in")
-             { return(
-              <Button
-                key={page}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-                onClick={()=>navigate("/login")}
-              >
-                {page}
-              </Button>
-            )}
-            return(
-              <Button
-                key={page}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-                onClick={()=>navigate("/treatments")}
-              >
-                {page}
-              </Button>
-            )
-          })
-            }
+            {pages.map((page) => {
+              if (page == 'log in') {
+                return (
+                  <Button
+                    key={page}
+                    sx={{ my: 2, color: 'white', display: 'block' }}
+                    onClick={() => navigate('/login')}
+                  >
+                    {page}
+                  </Button>
+                );
+              }
+              return (
+                <Button
+                  key={page}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                  onClick={() => navigate('/treatments')}
+                >
+                  {page}
+                </Button>
+              );
+            })}
 
             <Box
               sx={{
@@ -191,8 +216,8 @@ export default function Navbarvisitor() {
                 sx={{ ml: 1 }}
                 onClick={() => {
                   chosentheme === darkTheme
-                    ? setChosentheme(brightTheme)
-                    : setChosentheme(darkTheme);
+                    ? setChosennumber(0)
+                    : setChosennumber(1);
                 }}
                 color="inherit"
               >
@@ -207,7 +232,7 @@ export default function Navbarvisitor() {
               <CssBaseline />
             </ThemeProvider>
           </Box>
-          
+
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -215,6 +240,7 @@ export default function Navbarvisitor() {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+              onChange={handlechange}
             />
           </Search>
           <Box sx={{ flexGrow: 0 }}>

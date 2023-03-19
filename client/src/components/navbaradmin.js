@@ -9,10 +9,11 @@ import InputBase from '@mui/material/InputBase';
 import Menu from '@mui/material/Menu';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
 //import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router-dom';
-import { getAllAppointments,getAllUsers } from '../redux/slices/AdminReducer';
+import { getAllAppointments, getAllUsers } from '../redux/slices/AdminReducer';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import { styled, alpha } from '@mui/material/styles';
@@ -20,7 +21,23 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { logout } from '../redux/slices/UserReducer';
-const pages = ['show treatments', 'show appointments','show users', 'log out'];
+
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import CssBaseline from '@mui/material/CssBaseline';
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+const brightTheme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+});
+
+const pages = ['show treatments', 'show appointments', 'show users', 'log out'];
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -63,6 +80,28 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbaradmin() {
+  const [chosentheme, setChosentheme] = useState(brightTheme);
+  const [chosennumber, setChosennumber] = useState();
+  useEffect(() => {
+    const userTheme = localStorage.getItem('theme')
+      ? localStorage.getItem('theme')
+      : null;
+    if (userTheme && userTheme == 'darkTheme') {
+      setChosentheme(darkTheme);
+    } else {
+      setChosennumber(0);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (chosennumber == 0) {
+      localStorage.setItem('theme', 'brightTheme');
+      setChosentheme(brightTheme);
+    } else {
+      localStorage.setItem('theme', 'darkTheme');
+      setChosentheme(darkTheme);
+    }
+  }, [chosennumber]);
   const navigate = useNavigate();
   const { loggeduser } = useSelector((state) => state.userAuth);
   const dispatch = useDispatch();
@@ -122,6 +161,36 @@ export default function Navbaradmin() {
                 </MenuItem>
               ))}
             </Menu>
+            <Box
+              sx={{
+                display: 'flex',
+                width: '5%',
+                justifyContent: 'center',
+                bgcolor: '#1976d2',
+                color: 'text.primary',
+                borderRadius: 1,
+                p: 1,
+              }}
+            >
+              <IconButton
+                sx={{ ml: 1 }}
+                onClick={() => {
+                  chosentheme === darkTheme
+                    ? setChosennumber(0)
+                    : setChosennumber(1);
+                }}
+                color="inherit"
+              >
+                {chosentheme === darkTheme ? (
+                  <Brightness7Icon />
+                ) : (
+                  <Brightness4Icon />
+                )}
+              </IconButton>
+            </Box>
+            <ThemeProvider theme={chosentheme}>
+              <CssBaseline />
+            </ThemeProvider>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
@@ -168,10 +237,8 @@ export default function Navbaradmin() {
                       {page}
                     </Button>
                   );
-                }
-                else {
-                  if(page == 'show users')
-                  {
+                } else {
+                  if (page == 'show users') {
                     return (
                       <Button
                         key={page}
@@ -186,14 +253,15 @@ export default function Navbaradmin() {
                     );
                   }
                   return (
-                  <Button
-                    key={page}
-                    onClick={() => navigate('/treatments')}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                  >
-                    {page}
-                  </Button>
-                );}
+                    <Button
+                      key={page}
+                      onClick={() => navigate('/treatments')}
+                      sx={{ my: 2, color: 'white', display: 'block' }}
+                    >
+                      {page}
+                    </Button>
+                  );
+                }
               }
             })}
           </Box>

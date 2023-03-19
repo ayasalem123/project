@@ -14,6 +14,7 @@ import Treatment from './pages/treatments';
 import Calender from './components/calender';
 import List from './components/List';
 import Blocked from './pages/blocked';
+import Reviews from './pages/reviews';
 function App() {
   const [treatmentelement, setTreatmentelement] = useState([]);
   let gettreatment = async () => {
@@ -32,11 +33,15 @@ function App() {
           <Route element={<RequirePermission />}>
             <Route
               path="/"
-              element={<Home treatmentelement={treatmentelement} />}
+              element={<Home  />}
             />
             <Route
               path="/treatments"
-              element={<Treatment treatmentelement={treatmentelement} />}
+              element={<Treatment  />}
+            />
+            <Route
+              path="/reviews"
+              element={<Reviews  />}
             />
             <Route path="/book" element={<Calender />} />
             <Route path="/register" element={<Register />} />

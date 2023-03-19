@@ -5,30 +5,52 @@ import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import Navbaradmin from '../components/navbaradmin';
 import Navbarsigned from '../components/navbarsigned';
-function Treatment({ treatmentelement }) {
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { gettreatment } from '../redux/slices/UserReducer';
+function Treatment() {
+  const [value, setValue] = useState('');
   const { userAuth } = useSelector((state) => state);
   const loggeduser = userAuth?.loggeduser;
   const [showEditForm, setShowEditForm] = useState(false);
+
   const handleclick = () => {
     setShowEditForm(true);
   };
+  const dispatch = useDispatch();
+  const [filteredArr, setfilteredArr] = useState([]);
+  const [treatmentelement, setTreatmentelement] = useState([]);
+  let gettreatments = async () => {
+    let { payload } = await dispatch(gettreatment());
+    console.log(payload);
+    setTreatmentelement(payload);
+    setfilteredArr(payload)
+  };
+  useEffect(() => {
+    gettreatments();
+  }, []);
+  useEffect(() => {
+    let NewfilteredArr = treatmentelement.filter(el => el.title.trim().toLocaleLowerCase().includes(value) );
+    setfilteredArr(NewfilteredArr)
+  },[value])
+
   return (
     <div>
       {!loggeduser ? (
-        <Navbarvisitor />
-      ) : loggeduser.Role == 'user' ? (
+        <Navbarvisitor setval={setValue}></Navbarvisitor>
+      ) : loggeduser?.signeduser?.Role === 'user' ? (
         <Navbarsigned />
       ) : (
         <Navbaradmin />
       )}
-      {loggeduser.Role == 'admin' && (
+      {loggeduser?.Role == 'admin' && (
         <button onClick={handleclick}>add new treatment</button>
       )}
       {showEditForm ? <EditTreatment el={''} /> : null}
-      {treatmentelement.length !== 0 ? (
-        treatmentelement.map((el) => <Cardcomponent el={el} />)
+      {filteredArr?.length !== 0 ? (
+        filteredArr.map((el) => <Cardcomponent el={el} />)
       ) : (
-        <div>loading</div>
+        <div>nothing matches</div>
       )}
     </div>
   );

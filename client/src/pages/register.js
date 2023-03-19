@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {register} from '../redux/slices/UserReducer'
 import { Typography } from '@mui/material';
+import FileBase from 'react-file-base64';
 const theme = createTheme();
 export default function Register(props) {
   const dispatch = useDispatch();
@@ -26,10 +27,13 @@ export default function Register(props) {
     const data = new FormData(event.currentTarget);
     const newuser = {
       email: data.get('email'),
+      name: data.get('name'),
       password: data.get('password'),
+      image:img
     };
     dispatch(register({ newuser,toast, navigate }));
   };
+  const [img, setImg] = React.useState();
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -74,6 +78,24 @@ export default function Register(props) {
               id="password"
               autoComplete="current-password"
             />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="name"
+              label="name"
+              type="name"
+              id="name"
+              autoComplete="current-name"
+            />
+            <h5>add a profile picture</h5>
+            <FileBase
+          multiple={false}
+          type="file"
+          onDone={({ base64 }) => {
+            setImg(base64);
+          }}
+        />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"

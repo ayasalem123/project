@@ -5,12 +5,14 @@ const upload = multer({ storage: storage });
 const { DataValidation } = require('../middlewares/DataValidation');
 const { AuthMiddleware } = require('../middlewares/Authmiddlwear');
 const {
+  getuser,
   getCarousel,
   gettreatment,
   register,
   signin,
-
+  postreview,
   getappoitments,
+  getreviews,
   addappoitment,
 } = require('../controllers/UserController');
 const {
@@ -33,11 +35,14 @@ router.get('/treatment', gettreatment);
 
 router.get('/book', getdates);
 router.get('/allusers', getAllusers);
+router.post('/user', getuser);
 router.post('/book', addappoitment);
 router.post('/addtreatment', upload.single('image'), addtreatment);
 router.put('/changetreatment/:id', upload.single('image'), changetreatment);
 router.get('/image/:id', getimage);
+router.get('/reviews', getreviews);
 router.post('/image', upload.single('image'), addimage);
+router.post('/reviews', AuthMiddleware, postreview);
 router.put('/done/:id', doneappoitment);
 router.put('/notdone/:id', notdoneappoitment);
 router.put('/block/:id', blockuser);
